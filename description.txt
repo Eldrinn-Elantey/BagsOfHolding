@@ -1,0 +1,42 @@
+This mod adds a new accessory type, the bag, that collects certain items for you and stores them inside it beyond max stack sizes (as long as its equipped in the accessory slot).
+Use them (left click) to drop the contents on the floor, or left click a chest with the bag selected to try and store its contents into the chest.
+Right click with the bag in your hotbar to open up a chest-like UI where you can collect or deposit the bag-appropriate items.
+
+Includes:
+- Dirt Bag(for all types of soils and rock), Gem Bag(for gems), Ore Bag (for ores across the tier spectrum), and for all mentioned before, the Omni Bag.
+- Wood Bag (woods and acorns), Plant Bag (alchemy plants and pumpkins and their seeds, and sunflowers), Mushroom Bag (Mushrooms and grass seeds), Dye Material Bag (for dye materials) and their collective bag, the Nature Bag.
+- Fish Bag (fish and junk), Crate Bag (crates), Bait Bag (Bait, including truffle worm) and their collective bag, the Fishing Bag.
+- Coin Bag, a special bag that collects the 4 normal coins and stacks them up into more valuable coins.
+- The True Omni Bag, that collects everything that can be stacked (sorted by ItemID)
+
+All bags are crafted with 15 silk and one fallen star at a workbench, all collective bags are crafted with their component bags and a fallen star at the Tinkerer's Workbench and the True Omni Bag is crafted with all Collective bags (including future ones) and two Broken Hero Swords at the Thinkerer's Workbench.
+
+Also included is the "generic bag" that can be extended by other mods using this one as base to create unique bags.
+
+v1.2.3 Changelog
+  - Added French and Portuguese translations to the Bag. Credits to Chupsy for the French Translation.
+  - True Omni Bag now stacks coins as the Coin Bag does.
+
+v1.2.2 Changelog:
+  - Optimizations introduced to GenericBagUI and ItemFromTag function.
+
+v1.2.1 Changelog:
+  - Fixed a bug preventing bags from picking up items when the inventory was full and there was no item of that kind inside the bag.
+
+v1.2 Changelog:
+- Added compatibility with Magic Storage by Bluemagic. You can now use the bag on a Storage Heart, Crafting Access, Storage Access or Remote storage to automatically deposit all bag items inside (if they fit).
+- Added Shift-click from inventory to add an item to the Bag from the inventory in the Bag UI.
+- Fixed a bug with the True Omni Bag creation causing certain mod items not to be included in the permitted items.
+
+v1.1 Changelog:
+- Updated for tmod v0.10 (Not fully re-tested, so things may have broken from before)
+- Added Coin bag, that auto-picks-up coins and tries to save coins as a piggy bank would (max vaule coins). 
+- Added the Plant, Wood, Mushroom and Dye Material Bags, as well as their collective bag, the Nature Bag.
+- Added the Fish, Bait and Crate Bags, as well as their collective bag, the Fishing Bag.
+- Added the True Omni Bag, capable of storing anything that is stackable.
+
+V1.0.2 Changlog:
+- Slight refactor to make use of the new features of TagCompound.
+
+V1.0.1 Changlog:
+- Added checks to bag UI to avoid Exceptions.
