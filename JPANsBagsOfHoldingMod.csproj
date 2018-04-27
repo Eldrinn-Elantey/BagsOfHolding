@@ -49,6 +49,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Xact\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Xact.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\..\Visual Studio 2015\Projects\TestGameCSharp\TestGameCSharp\x86\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Terraria">
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Terraria\Terraria.exe</HintPath>
@@ -57,6 +60,8 @@
   <ItemGroup>
     <Compile Include="BagPlayer.cs" />
     <Compile Include="BagsOfHoldingMod.cs" />
+    <Compile Include="Commands\BagsOfHoldingCommand.cs" />
+    <Compile Include="Items\ChunkBag.cs" />
     <Compile Include="Items\BaitBag.cs" />
     <Compile Include="Items\CoinBag.cs" />
     <Compile Include="Items\CrateBag.cs" />
@@ -80,6 +85,7 @@
     <Content Include="build.txt" />
     <Content Include="description.txt" />
     <Content Include="Items\BaitBag.png" />
+    <Content Include="Items\ChunkBag.png" />
     <Content Include="Items\CoinBag.png" />
     <Content Include="Items\CrateBag.png" />
     <Content Include="Items\DirtBag.png" />

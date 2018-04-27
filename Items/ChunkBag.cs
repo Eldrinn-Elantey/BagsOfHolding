@@ -14,8 +14,11 @@ using Terraria.IO;
 
 namespace JPANsBagsOfHoldingMod.Items
 {
-	public class WoodBag : GenericHoldingBag
+	public class ChunkBag : GenericHoldingBag
 	{
+
+        private static Preferences bagConfig;
+
         public static List<string> contents;
         public static List<string> noPickup;
 
@@ -23,54 +26,21 @@ namespace JPANsBagsOfHoldingMod.Items
         {
             preventPickup = new List<string>();
             order = new List<string>();
-            order.Add(""+ItemID.Wood);
-			order.Add(""+ItemID.BorealWood);
-			order.Add(""+ItemID.RichMahogany);
-			order.Add(""+ItemID.Ebonwood);
-			order.Add(""+ItemID.Shadewood);
-			order.Add(""+ItemID.Pearlwood);
-            order.Add("" + ItemID.PalmWood);
-            order.Add("" + ItemID.SpookyWood);
-            order.Add("" + ItemID.Acorn);
-            order.Add("" + ItemID.Cactus);
+            order.Add("" + ItemID.RottenChunk);
 
-            order.Add("ThoriumMod:YewWood");
-
-			/*crystilium mod support*/
-			order.Add("CrystiliumMod:CrystalWood");
-
-            /*spirit mod Suppore*/
-            order.Add("SpiritMod:SpiritWoodItem");
-
-            order.Add("Tremor:GlacierWood");
-
-            order.Add("CosmeticVariety:Floralwood");
-            order.Add("CosmeticVariety:Starwood");
-            order.Add("CosmeticVariety:Starseed");
-
-            order.Add("EA:Item_3382");
-            order.Add("EA:Item_3604");
-            order.Add("EA:Item_3050");
-
-            order.Add("Erilipah:GrayscaleWood");
-
-            order.Add("Exodus:DarkWood");
-
-            order.Add("SacredTools:FrostWood");
-            order.Add("SacredTools:FlameWood");
-
+            order.Add("ThoriumMod:LodeStoneChunk");
+            order.Add("ThoriumMod:ValadiumChunk");
+            order.Add("ThoriumMod:IllumiteChunk");
         }
 
 
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
-            DisplayName.SetDefault("Wood Bag");
-            Tooltip.SetDefault("Automatically stores picked up wood and acorns in the bag for you if equipped as an accessory.");
-            DisplayName.AddTranslation(GameCulture.French, "Sac de Bois");
-            Tooltip.AddTranslation(GameCulture.French, "Récupère automatiquement le bois et les glands si le sac est équippé dans les accessoires.");
-            DisplayName.AddTranslation(GameCulture.Portuguese, "Saco de Madeira");
-            Tooltip.AddTranslation(GameCulture.Portuguese, "Guarda madeiras no saco automáticamente se equipado como um acessório.");
+            DisplayName.SetDefault("Chunk Bag");
+            Tooltip.SetDefault("Stores chunks.");
+            DisplayName.AddTranslation(GameCulture.Portuguese, "Saco de Pedaços");
+            Tooltip.AddTranslation(GameCulture.Portuguese, "Guarda pedaços.");
         }
 
         public override void SetDefaults()
@@ -79,11 +49,9 @@ namespace JPANsBagsOfHoldingMod.Items
 			item.value = Item.sellPrice(0,0,15,0);
 		}
 
-        private Preferences bagConfig;
-
         public override void setupItemList()
         {
-            bagID = 10;
+            bagID = 16;
             if (bagConfig == null)
             {
                 remakeFromConfig();
@@ -133,6 +101,8 @@ namespace JPANsBagsOfHoldingMod.Items
                 bagConfig.Save();
             }
         }
+
+
 
         public override void AddRecipes(){
             if (!disableBag)

@@ -289,13 +289,14 @@ namespace JPANsBagsOfHoldingMod.UI
 		public static void buildItem(){
 			presentItem.Clear();
             presentItemItem.Clear();
+
             if (openBag.order == null || openBag.order.Count <= 0)
                 return;
 			for(int i = 0; i < openBag.order.Count; i++){
                 string key = openBag.order[i];
-                Item itm = GenericHoldingBag.getItemFromTag(key);
-				if(openBag.items.ContainsKey(key)) {
-                    if (openBag.items.GetAsLong(key) > 0L && itm.type != 0)
+				if(openBag.items.ContainsKey(key) && openBag.items.GetAsLong(key) > 0L) {
+                    Item itm = GenericHoldingBag.getItemFromTag(key);
+                    if (itm.type != 0)
                     {
                         presentItem.Add(key);
                         presentItemItem.Add(itm);

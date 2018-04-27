@@ -11,20 +11,63 @@ using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using JPANsBagsOfHoldingMod.UI;
 using Terraria.Localization;
+using Terraria.IO;
 
 namespace JPANsBagsOfHoldingMod.Items
 {
 	public class CoinBag : GenericHoldingBag
 	{
-		public static List<string> contents;
-		
-		static CoinBag(){
-			contents = new List<string>();
-			contents.Add(""+ItemID.CopperCoin);
-			contents.Add(""+ItemID.SilverCoin);
-			contents.Add(""+ItemID.GoldCoin);
-			contents.Add(""+ItemID.PlatinumCoin);
-		}
+        public static List<string> contents;
+        public static List<string> noPickup;
+
+        public override void createDefaultItemList()
+        {
+            preventPickup = new List<string>();
+            order = new List<string>();
+            order.Add(""+ItemID.CopperCoin);
+			order.Add(""+ItemID.SilverCoin);
+			order.Add(""+ItemID.GoldCoin);
+			order.Add(""+ItemID.PlatinumCoin);
+
+            order.Add("" + ItemID.DefenderMedal);
+
+            //thorium support
+            order.Add("ThoriumMod:VanquisherMedal");
+
+            //expeditions support
+            order.Add("Expeditions:BountyVoucher");
+
+            //imksushi mod support
+            order.Add("imkSushisMod:LootStartToken");
+            order.Add("imkSushisMod:LootGoblinsToken");
+            order.Add("imkSushisMod:LootSkeletronToken");
+            order.Add("imkSushisMod:LootHardmodeToken");
+            order.Add("imkSushisMod:LootPiratesToken");
+            order.Add("imkSushisMod:LootMechToken");
+            order.Add("imkSushisMod:LootPlanteraToken");
+            order.Add("imkSushisMod:LootMartiansToken");
+
+            order.Add("imkSushisMod:SurfacePurityStartToken");
+            order.Add("imkSushisMod:SurfacePurityEocToken");
+            order.Add("imkSushisMod:SpacePurityStartToken");
+            order.Add("imkSushisMod:SpacePurityHardmodeToken");
+            order.Add("imkSushisMod:SurfaceDesertStartToken");
+            order.Add("imkSushisMod:UndergroundPurityStartToken");
+            order.Add("imkSushisMod:UndergroundJungleStartToken");
+            order.Add("imkSushisMod:UndergroundSnowStartToken");
+            order.Add("imkSushisMod:UndergroundCorruptionEocToken");
+            order.Add("imkSushisMod:UndergroundCrimsonEocToken");
+            order.Add("imkSushisMod:UndergroundDungeonSkeletronToken");
+            order.Add("imkSushisMod:UnderworldHellSkeletronToken");
+            order.Add("imkSushisMod:UnderwaterOceanStartToken");
+            order.Add("imkSushisMod:FishingStartToken");
+            order.Add("imkSushisMod:FishingHardmodeToken");
+            order.Add("imkSushisMod:TempleJunglePlanteraToken");
+            order.Add("imkSushisMod:SwapToken");
+
+            order.Add("ExperienceAndClasses:Boss_Orb");
+            order.Add("ExperienceAndClasses:Monster_Orb");
+        }
 
         public override void SetStaticDefaults()
         {
@@ -41,20 +84,74 @@ namespace JPANsBagsOfHoldingMod.Items
 		{
             base.SetDefaults();
 			item.value = Item.sellPrice(0,0,15,0);
-		} 
-		
-		public override void setupItemList(){
-			order = contents;
-			base.setupItemList();
 		}
-		
-		public override void AddRecipes(){
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Silk, 15);
-			recipe.AddIngredient(ItemID.FallenStar, 1);
-			recipe.SetResult(this, 1);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.AddRecipe();
+
+
+        private Preferences bagConfig;
+
+        public override void setupItemList()
+        {
+            bagID = 14;
+            if (bagConfig == null)
+            {
+                remakeFromConfig();
+            }
+            else
+            {
+                if (items == null)
+                    items = new TagCompound();
+                config = bagConfig;
+                order = contents;
+                preventPickup = noPickup;
+                loadLeftClickFromConfig();
+            }
+        }
+
+        public override void remakeFromConfig()
+        {
+            base.setupItemList();
+            if (contents == null)
+            {
+                contents = new List<string>();
+            }
+            else
+            {
+                contents.Clear();
+            }
+            contents.AddRange(order);
+            if (noPickup == null)
+            {
+                noPickup = new List<string>();
+            }
+            else
+            {
+                noPickup.Clear();
+            }
+            noPickup.AddRange(preventPickup);
+            if (bagConfig == null)
+            {
+                bagConfig = config;
+            }
+            else
+            {
+                foreach (string k in config.GetAllKeys())
+                {
+                    bagConfig.Put(k, config.Get<object>(k, null));
+                }
+                bagConfig.Save();
+            }
+        }
+
+        public override void AddRecipes(){
+            if (!disableBag)
+            {
+                ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(ItemID.Silk, 15);
+                recipe.AddIngredient(ItemID.FallenStar, 1);
+                recipe.SetResult(this, 1);
+                recipe.AddTile(TileID.WorkBenches);
+                recipe.AddRecipe();
+            }
 		}
 
         public Item[] condenseCoins(Item[] inv)
@@ -64,6 +161,7 @@ namespace JPANsBagsOfHoldingMod.Items
             {
                 ans[i] = new Item();
                 ans[i].SetDefaults(ItemID.CopperCoin + i);
+                ans[i].stack = 0;
             }
             List<int> toRemove = new List<int>();
             for (int i = 0; i < 40; i++)
@@ -97,7 +195,7 @@ namespace JPANsBagsOfHoldingMod.Items
             //first, maximize space by taking all coins in the inventory and condense them in 4 stacks with unlimited value
             Item[] coins = condenseCoins(inv);
             //next, add the coins to the total (pouch): try adding them to lower coin value (100 copper if 1 silver) if it does not fit
-            for(int i = 0; i< coins.Length; i++)
+            for(int i = coins.Length-1; i>= 0; i--)
             {
                 if (coins[i].stack > 0)
                 {
@@ -132,6 +230,14 @@ namespace JPANsBagsOfHoldingMod.Items
             emptySilver(inv);
             emptyCopper(inv);
             
+            foreach(string key in order)
+            {
+                if(key != "" + ItemID.PlatinumCoin && key != "" + ItemID.GoldCoin &&
+                   key != "" + ItemID.SilverCoin && key != "" + ItemID.CopperCoin)
+                {
+                    placeItemInInventory(key, inv, chest);
+                }
+            }
         }
 
         private void emptyPlatinum(Item[] inv)
@@ -279,19 +385,26 @@ namespace JPANsBagsOfHoldingMod.Items
                 setupItemList();
             try
             {
-                long ans = addItemToDown(itm);
-                if(ans > 0)
+                string itmTag = ItemToTag(itm);
+                if (itmTag == "" + ItemID.PlatinumCoin || itmTag == "" + ItemID.GoldCoin ||
+                  itmTag == "" + ItemID.SilverCoin || itmTag == "" + ItemID.CopperCoin)
                 {
-                    rebalanceCoins();
+                    long ans = addItemToDown(itm);
+                    if (ans > 0)
+                    {
+                        rebalanceCoins();
+                    }
+                    return ans;
+                }else
+                {
+                    return base.addItem(itm);
                 }
-                return ans;
             }
             catch (Exception ex)
             {
                 BagsOfHoldingMod.debugChat("Error: " + ex);
                 return 0;
             }
-
         }
 
         private void rebalanceCoins()

@@ -22,11 +22,17 @@ namespace JPANsBagsOfHoldingMod.Items
 			resetContents();
 		}
 		public static void resetContents(){
-			contents.Clear();
-			contents.AddRange(originalContents);
-			contents.AddRange(OreBag.contents);
-			contents.AddRange(GemBag.contents);
-			contents.AddRange(DirtBag.contents);
+
+            contents.Clear();
+            GenericHoldingBag bg = new OreBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
+            bg = new GemBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
+            bg = new DirtBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
 		}
 
         public override void SetStaticDefaults()
@@ -47,40 +53,24 @@ namespace JPANsBagsOfHoldingMod.Items
 		}
 		
 		public override void setupItemList(){
-			/*items = new TagCompound();
-			GemBag gb = new GemBag();
-			gb.setupItemList();
-			foreach(KeyValuePair<string, object> itm in gb.items){
-				if(!items.HasTag(itm.Key))
-					items.Add(itm);
-			}
-			OreBag ob = new OreBag();
-			ob.setupItemList();
-			foreach(KeyValuePair<string, object> itm in ob.items){
-				if(!items.HasTag(itm.Key))
-					items.Add(itm);
-			}
-			DirtBag db = new DirtBag();
-			db.setupItemList();
-			foreach(KeyValuePair<string, object> itm in db.items){
-				if(!items.HasTag(itm.Key))
-					items.Add(itm);
-			}*/
-			
+            bagID = 4;
 			order = contents;
 			base.setupItemList();
-		}
+            order = contents;
+        }
 		
 		public override void AddRecipes(){
-			//this.SetDefaults();
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "OreBag",1);
-			recipe.AddIngredient(null, "GemBag",1);
-			recipe.AddIngredient(null, "DirtBag",1);
-			recipe.AddIngredient(ItemID.FallenStar, 1);
-			recipe.SetResult(this, 1);
-			recipe.AddTile(TileID.TinkerersWorkbench);
-			recipe.AddRecipe();
+            if (!disableBag)
+            {
+                ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(null, "OreBag", 1);
+                recipe.AddIngredient(null, "GemBag", 1);
+                recipe.AddIngredient(null, "DirtBag", 1);
+                recipe.AddIngredient(ItemID.FallenStar, 1);
+                recipe.SetResult(this, 1);
+                recipe.AddTile(TileID.TinkerersWorkbench);
+                recipe.AddRecipe();
+            }
 		}
 	}
 }

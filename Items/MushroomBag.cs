@@ -10,25 +10,29 @@ using Terraria.ObjectData;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.Localization;
+using Terraria.IO;
 
 namespace JPANsBagsOfHoldingMod.Items
 {
 	public class MushroomBag : GenericHoldingBag
 	{
-		public static List<string> contents;
-		
-		static MushroomBag(){
-			contents = new List<string>();
-            contents.Add("" + ItemID.Mushroom);
-            contents.Add("" + ItemID.GlowingMushroom);
-            contents.Add("" + ItemID.VileMushroom);
-            contents.Add("" + ItemID.ViciousMushroom);
-            contents.Add(""+ItemID.GrassSeeds);
-            contents.Add("" + ItemID.JungleGrassSeeds);
-            contents.Add(""+ItemID.MushroomGrassSeeds);
-            contents.Add("" + ItemID.CorruptSeeds);
-            contents.Add("" + ItemID.CrimsonSeeds);
-            contents.Add("" + ItemID.HallowedSeeds);
+        public static List<string> contents;
+        public static List<string> noPickup;
+
+        public override void createDefaultItemList()
+        {
+            preventPickup = new List<string>();
+            order = new List<string>();
+            order.Add("" + ItemID.Mushroom);
+            order.Add("" + ItemID.GlowingMushroom);
+            order.Add("" + ItemID.VileMushroom);
+            order.Add("" + ItemID.ViciousMushroom);
+            order.Add(""+ItemID.GrassSeeds);
+            order.Add("" + ItemID.JungleGrassSeeds);
+            order.Add(""+ItemID.MushroomGrassSeeds);
+            order.Add("" + ItemID.CorruptSeeds);
+            order.Add("" + ItemID.CrimsonSeeds);
+            order.Add("" + ItemID.HallowedSeeds);
         }
 
 
@@ -48,19 +52,72 @@ namespace JPANsBagsOfHoldingMod.Items
 			base.SetDefaults();
 			item.value = Item.sellPrice(0,0,15,0);
 		}
-		
-		public override void setupItemList(){
-			order = contents;
-			base.setupItemList();
-		}
-		
-		public override void AddRecipes(){
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Silk, 15);
-			recipe.AddIngredient(ItemID.FallenStar, 1);
-			recipe.SetResult(this, 1);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.AddRecipe();
+
+        private Preferences bagConfig;
+
+        public override void setupItemList()
+        {
+            bagID = 11;
+            if (bagConfig == null)
+            {
+                remakeFromConfig();
+            }
+            else
+            {
+                if (items == null)
+                    items = new TagCompound();
+                config = bagConfig;
+                order = contents;
+                preventPickup = noPickup;
+                loadLeftClickFromConfig();
+            }
+        }
+
+        public override void remakeFromConfig()
+        {
+            base.setupItemList();
+            if (contents == null)
+            {
+                contents = new List<string>();
+            }
+            else
+            {
+                contents.Clear();
+            }
+            contents.AddRange(order);
+            if (noPickup == null)
+            {
+                noPickup = new List<string>();
+            }
+            else
+            {
+                noPickup.Clear();
+            }
+            noPickup.AddRange(preventPickup);
+            if (bagConfig == null)
+            {
+                bagConfig = config;
+            }
+            else
+            {
+                foreach (string k in config.GetAllKeys())
+                {
+                    bagConfig.Put(k, config.Get<object>(k, null));
+                }
+                bagConfig.Save();
+            }
+        }
+
+        public override void AddRecipes(){
+            if (!disableBag)
+            {
+                ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(ItemID.Silk, 15);
+                recipe.AddIngredient(ItemID.FallenStar, 1);
+                recipe.SetResult(this, 1);
+                recipe.AddTile(TileID.WorkBenches);
+                recipe.AddRecipe();
+            }
 		}
 	}
 }

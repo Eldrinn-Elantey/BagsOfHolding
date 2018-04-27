@@ -22,12 +22,19 @@ namespace JPANsBagsOfHoldingMod.Items
 			resetContents();
 		}
 		public static void resetContents(){
-			contents.Clear();
-			contents.AddRange(originalContents);
-			contents.AddRange(WoodBag.contents);
-			contents.AddRange(PlantBag.contents);
-            contents.AddRange(MushroomBag.contents);
-            contents.AddRange(DyeMaterialBag.contents);
+            contents.Clear();
+            GenericHoldingBag bg = new WoodBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
+            bg = new PlantBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
+            bg = new MushroomBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
+            bg = new DyeMaterialBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
 		}
 
         public override void SetStaticDefaults()
@@ -48,41 +55,25 @@ namespace JPANsBagsOfHoldingMod.Items
 		}
 		
 		public override void setupItemList(){
-			/*items = new TagCompound();
-			GemBag gb = new GemBag();
-			gb.setupItemList();
-			foreach(KeyValuePair<string, object> itm in gb.items){
-				if(!items.HasTag(itm.Key))
-					items.Add(itm);
-			}
-			OreBag ob = new OreBag();
-			ob.setupItemList();
-			foreach(KeyValuePair<string, object> itm in ob.items){
-				if(!items.HasTag(itm.Key))
-					items.Add(itm);
-			}
-			DirtBag db = new DirtBag();
-			db.setupItemList();
-			foreach(KeyValuePair<string, object> itm in db.items){
-				if(!items.HasTag(itm.Key))
-					items.Add(itm);
-			}*/
-			
-			order = contents;
+            bagID = 13;
+            order = contents;
 			base.setupItemList();
-		}
+            order = contents;
+        }
 		
 		public override void AddRecipes(){
-			//this.SetDefaults();
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "WoodBag", 1);
-			recipe.AddIngredient(null, "PlantBag", 1);
-			recipe.AddIngredient(null, "MushroomBag", 1);
-            recipe.AddIngredient(null, "DyeMaterialBag", 1);
-            recipe.AddIngredient(ItemID.FallenStar, 1);
-			recipe.SetResult(this, 1);
-			recipe.AddTile(TileID.TinkerersWorkbench);
-			recipe.AddRecipe();
+            if (!disableBag)
+            {
+                ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(null, "WoodBag", 1);
+                recipe.AddIngredient(null, "PlantBag", 1);
+                recipe.AddIngredient(null, "MushroomBag", 1);
+                recipe.AddIngredient(null, "DyeMaterialBag", 1);
+                recipe.AddIngredient(ItemID.FallenStar, 1);
+                recipe.SetResult(this, 1);
+                recipe.AddTile(TileID.TinkerersWorkbench);
+                recipe.AddRecipe();
+            }
 		}
 	}
 }

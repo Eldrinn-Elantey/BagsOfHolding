@@ -13,6 +13,27 @@ All bags are crafted with 15 silk and one fallen star at a workbench, all collec
 
 Also included is the "generic bag" that can be extended by other mods using this one as base to create unique bags.
 
+v1.4 Changelog
+- All bags now have a config file that determines what they can pickup and store, as well as the item order they appear in the bag and individiual toggles for each left-click action (allows ie: disabling the left click to floor action).
+  - Collective bags don't use the "order" list, instead recreating it from their base bags order lists.
+  - True Omni Bag contains instead a "Blacklist" list that prevent items from being stored in the bag.
+- Several new Config options for the Bags of holding config, including an option to display an item's tag in the item's tooltip, making it quick to add mod support in your own configs.
+- Added compatibility with several new mods and updated some old ones.
+  - Due to the way this mod works, it will no longer be possible to update the order list automatically unless it is deleted from the bag's config file.
+  - Will accept submissions of additions to the several bags order list in the thread for mod support for mods not yet supported.
+- Hopefully fixed multiplayer and direct-to-chest deposits.
+
+v1.3.1 Changelog
+- Fixed bug that causes one coin of each to be added when depositing on any bank inventory.
+- Fixed True Omni Bag not stacking coins when depositing them in a bank.
+
+v1.3 Changlog
+ - Added config file that allows the bags to work from Accessory slots, Vanity Accessory Slots, Inventory or Hotbar. 
+   - Run the newest version once to create the Config file, then enable (= true) any combination you would like.
+   - Priorities run from acessory top-bottom, vanity top-bottom, inventory from last slot (bottom right) to slot 10 (top left below the hotbar) from right to left, then up one item slot, and finally hotbar, from slot 1 to 9 0. 
+
+v1.2.4 Changelog
+  - Added Defender Medals, Thorium's Vanquisher Medals and imkSushi's tokens to the Coin Bag.
 v1.2.3 Changelog
   - Added French and Portuguese translations to the Bag. Credits to Chupsy for the French Translation.
   - True Omni Bag now stacks coins as the Coin Bag does.

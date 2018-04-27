@@ -10,57 +10,104 @@ using Terraria.ObjectData;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.Localization;
+using Terraria.IO;
 
 namespace JPANsBagsOfHoldingMod.Items
 {
 	public class CrateBag : GenericHoldingBag
 	{
-		
-		public static List<string> contents;
-		
-		static CrateBag(){
-			contents = new List<string>();
-			contents.Add(""+ItemID.WoodenCrate);
-			contents.Add(""+ItemID.IronCrate);
-			contents.Add(""+ItemID.GoldenCrate);
-			contents.Add(""+ItemID.CorruptFishingCrate);
-            contents.Add("" + ItemID.CrimsonFishingCrate);
-            contents.Add(""+ItemID.HallowedFishingCrate);
-            contents.Add("" + ItemID.JungleFishingCrate);
-            contents.Add("" + ItemID.FloatingIslandFishingCrate);
-            contents.Add(""+ItemID.DungeonFishingCrate);
+
+        public static List<string> contents;
+        public static List<string> noPickup;
+
+        public override void createDefaultItemList()
+        {
+            preventPickup = new List<string>();
+            order = new List<string>();
+            order.Add(""+ItemID.WoodenCrate);
+			order.Add(""+ItemID.IronCrate);
+			order.Add(""+ItemID.GoldenCrate);
+			order.Add(""+ItemID.CorruptFishingCrate);
+            order.Add("" + ItemID.CrimsonFishingCrate);
+            order.Add(""+ItemID.HallowedFishingCrate);
+            order.Add("" + ItemID.JungleFishingCrate);
+            order.Add("" + ItemID.FloatingIslandFishingCrate);
+            order.Add(""+ItemID.DungeonFishingCrate);
 			
 			/*thorium support*/
-			contents.Add("ThoriumMod:StrangeCrate");
+			order.Add("ThoriumMod:StrangeCrate");
 			
 			/*Fishing3 mod support*/
-			contents.Add("Fishing3:ForestCrate");
-            contents.Add("Fishing3:CaveCrate");
-            contents.Add("Fishing3:DesertCrate");
-            contents.Add("Fishing3:IceCrate");
-            contents.Add("Fishing3:OceanCrate");
-            contents.Add("Fishing3:ObsidianCrate");
-            contents.Add("Fishing3:PCorruptCrate");
-            contents.Add("Fishing3:PCrimsonCrate");
-            contents.Add("Fishing3:PHallowCrate");
-            contents.Add("Fishing3:PossessedCrate");
+			order.Add("Fishing3:ForestCrate");
+            order.Add("Fishing3:CaveCrate");
+            order.Add("Fishing3:DesertCrate");
+            order.Add("Fishing3:IceCrate");
+            order.Add("Fishing3:OceanCrate");
+            order.Add("Fishing3:ObsidianCrate");
+            order.Add("Fishing3:PCorruptCrate");
+            order.Add("Fishing3:PCrimsonCrate");
+            order.Add("Fishing3:PHallowCrate");
+            order.Add("Fishing3:PJungleCrate");
+            order.Add("Fishing3:PossessedCrate");
 
             /*Unu's Battle Rods Support*/
-            contents.Add("UnuBattleRods:GraniteCrate");
-            contents.Add("UnuBattleRods:MarbleCrate");
-            contents.Add("UnuBattleRods:MimicCrate");
-            contents.Add("UnuBattleRods:CorruptCrate");
-            contents.Add("UnuBattleRods:CrimsonCrate");
-            contents.Add("UnuBattleRods:ObsidianCrate");
-            contents.Add("UnuBattleRods:MeteorCrate");
-            contents.Add("UnuBattleRods:HallowedCrate");
-            contents.Add("UnuBattleRods:SoulCrate");
-            contents.Add("UnuBattleRods:BeeCrate");
-            contents.Add("UnuBattleRods:ChlorophyteCrate");
-            contents.Add("UnuBattleRods:SpookyCrate");
-            contents.Add("UnuBattleRods:ShroomiteCrate");
-            contents.Add("UnuBattleRods:TerraCrate");
-            contents.Add("UnuBattleRods:LuminiteCrate");
+            order.Add("UnuBattleRods:GraniteCrate");
+            order.Add("UnuBattleRods:MarbleCrate");
+            order.Add("UnuBattleRods:MimicCrate");
+            order.Add("UnuBattleRods:CorruptCrate");
+            order.Add("UnuBattleRods:CrimsonCrate");
+            order.Add("UnuBattleRods:ObsidianCrate");
+            order.Add("UnuBattleRods:MeteorCrate");
+            order.Add("UnuBattleRods:HallowedCrate");
+            order.Add("UnuBattleRods:SoulCrate");
+            order.Add("UnuBattleRods:BeeCrate");
+            order.Add("UnuBattleRods:ChlorophyteCrate");
+            order.Add("UnuBattleRods:SpookyCrate");
+            order.Add("UnuBattleRods:ShroomiteCrate");
+            order.Add("UnuBattleRods:TerraCrate");
+            order.Add("UnuBattleRods:LuminiteCrate");
+
+            order.Add("ForgottenMemories:ForgottenCrate");
+
+            order.Add("FishingEX:CustomGoldenCrate");
+            order.Add("FishingEX:CustomIronCrate");
+            order.Add("FishingEX:CustomWoodenCrate");
+            order.Add("FishingEX:GenuineGoldenCrate");
+            order.Add("FishingEX:GenuineIronCrate");
+            order.Add("FishingEX:GenuineWoodenCrate");
+
+            order.Add("FishingPlus:SandstoneCrate");
+            order.Add("FishingPlus:SnowyCrate");
+            order.Add("FishingPlus:SteampunkCrate");
+
+            order.Add("MoreBiomeFishingCrates:AnglerCrate");
+            order.Add("MoreBiomeFishingCrates:DesertCrate");
+            order.Add("MoreBiomeFishingCrates:GlowingMushroomCrate");
+            order.Add("MoreBiomeFishingCrates:HellCrate");
+            order.Add("MoreBiomeFishingCrates:IceCrate");
+            order.Add("MoreBiomeFishingCrates:OceanCrate");
+
+            order.Add("QwertysRandomContent:RhuthiniumCrate");
+
+            order.Add("SacredTools:FlariumCrate");
+
+            order.Add("SpiritMod:PirateCrate");
+            order.Add("SpiritMod:SpiritCrate");
+
+            order.Add("SpelunkSurge:BoneCrate");
+            order.Add("SpelunkSurge:GraniteCrate");
+            order.Add("SpelunkSurge:MarbleCrate");
+
+            order.Add("Tacklebox:GemCrate");
+            order.Add("Tacklebox:HellCrate");
+            order.Add("Tacklebox:SandCrate");
+            order.Add("Tacklebox:SeaCrate");
+            order.Add("Tacklebox:SnowCrate");
+
+            order.Add("Terraria2:JunkCrate");
+            order.Add("Terraria2:QuestCrate");
+            order.Add("Terraria2:ExpertCasket");
+
         }
 
         public override void SetStaticDefaults()
@@ -79,22 +126,72 @@ namespace JPANsBagsOfHoldingMod.Items
 			base.SetDefaults();
 			item.value = Item.sellPrice(0,0,15,0);
 		}
-		
-		public override void setupItemList(){
-			
-			
-			order = contents;
-			base.setupItemList();
-			
-		}
-		
-		public override void AddRecipes(){
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Silk, 15);
-			recipe.AddIngredient(ItemID.FallenStar, 1);
-			recipe.SetResult(this, 1);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.AddRecipe();
+
+        private Preferences bagConfig;
+
+        public override void setupItemList()
+        {
+            bagID = 6;
+            if (bagConfig == null)
+            {
+                remakeFromConfig();
+            }
+            else
+            {
+                if (items == null)
+                    items = new TagCompound();
+                config = bagConfig;
+                order = contents;
+                preventPickup = noPickup;
+                loadLeftClickFromConfig();
+            }
+        }
+
+        public override void remakeFromConfig()
+        {
+            base.setupItemList();
+            if (contents == null)
+            {
+                contents = new List<string>();
+            }
+            else
+            {
+                contents.Clear();
+            }
+            contents.AddRange(order);
+            if (noPickup == null)
+            {
+                noPickup = new List<string>();
+            }
+            else
+            {
+                noPickup.Clear();
+            }
+            noPickup.AddRange(preventPickup);
+            if (bagConfig == null)
+            {
+                bagConfig = config;
+            }
+            else
+            {
+                foreach (string k in config.GetAllKeys())
+                {
+                    bagConfig.Put(k, config.Get<object>(k, null));
+                }
+                bagConfig.Save();
+            }
+        }
+
+        public override void AddRecipes(){
+            if (!disableBag)
+            {
+                ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(ItemID.Silk, 15);
+                recipe.AddIngredient(ItemID.FallenStar, 1);
+                recipe.SetResult(this, 1);
+                recipe.AddTile(TileID.WorkBenches);
+                recipe.AddRecipe();
+            }
 		}
 	}
 }

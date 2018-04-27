@@ -10,64 +10,110 @@ using Terraria.ObjectData;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.Localization;
+using Terraria.IO;
 
 namespace JPANsBagsOfHoldingMod.Items
 {
 	public class DirtBag : GenericHoldingBag
 	{
-		
-		public static List<string> contents;
-		
-		static DirtBag(){
-			contents = new List<string>();
-			contents.Add(""+ItemID.DirtBlock);
-			contents.Add(""+ItemID.ClayBlock);
-			contents.Add(""+ItemID.SiltBlock);
-			contents.Add(""+ItemID.MudBlock);
-			contents.Add(""+ItemID.StoneBlock);
-			contents.Add(""+ItemID.EbonstoneBlock);
-			contents.Add(""+ItemID.CrimstoneBlock);
-			contents.Add(""+ItemID.PearlstoneBlock);
-			contents.Add(""+ItemID.SandBlock);
-			contents.Add(""+ItemID.EbonsandBlock);
-			contents.Add(""+ItemID.CrimsandBlock);
-			contents.Add(""+ItemID.PearlsandBlock);
-			contents.Add(""+ItemID.HardenedSand);
-			contents.Add(""+ItemID.CorruptHardenedSand);
-			contents.Add(""+ItemID.CrimsonHardenedSand);
-			contents.Add(""+ItemID.HallowHardenedSand);
-			contents.Add(""+ItemID.Sandstone);
-			contents.Add(""+ItemID.CorruptSandstone);
-			contents.Add(""+ItemID.CrimsonSandstone);
-			contents.Add(""+ItemID.HallowSandstone);
-			contents.Add(""+ItemID.DesertFossil);
-			contents.Add(""+ItemID.SnowBlock);
-			contents.Add(""+ItemID.SlushBlock);
-			contents.Add(""+ItemID.IceBlock);
-			contents.Add(""+ItemID.PurpleIceBlock);
-			contents.Add(""+ItemID.RedIceBlock);
-			contents.Add(""+ItemID.PinkIceBlock);
-			contents.Add(""+ItemID.Granite);
-			contents.Add(""+ItemID.GraniteBlock);
-			contents.Add(""+ItemID.Marble);
-			contents.Add(""+ItemID.MarbleBlock);
-			contents.Add(""+ItemID.AshBlock);
+
+        public static List<string> contents;
+        public static List<string> noPickup;
+
+        public override void createDefaultItemList()
+        {
+            preventPickup = new List<string>();
+            order = new List<string>();
+			order.Add(""+ItemID.DirtBlock);
+			order.Add(""+ItemID.ClayBlock);
+			order.Add(""+ItemID.SiltBlock);
+			order.Add(""+ItemID.MudBlock);
+			order.Add(""+ItemID.StoneBlock);
+			order.Add(""+ItemID.EbonstoneBlock);
+			order.Add(""+ItemID.CrimstoneBlock);
+			order.Add(""+ItemID.PearlstoneBlock);
+			order.Add(""+ItemID.SandBlock);
+			order.Add(""+ItemID.EbonsandBlock);
+			order.Add(""+ItemID.CrimsandBlock);
+			order.Add(""+ItemID.PearlsandBlock);
+			order.Add(""+ItemID.HardenedSand);
+			order.Add(""+ItemID.CorruptHardenedSand);
+			order.Add(""+ItemID.CrimsonHardenedSand);
+			order.Add(""+ItemID.HallowHardenedSand);
+			order.Add(""+ItemID.Sandstone);
+			order.Add(""+ItemID.CorruptSandstone);
+			order.Add(""+ItemID.CrimsonSandstone);
+			order.Add(""+ItemID.HallowSandstone);
+			order.Add(""+ItemID.DesertFossil);
+			order.Add(""+ItemID.SnowBlock);
+			order.Add(""+ItemID.SlushBlock);
+			order.Add(""+ItemID.IceBlock);
+			order.Add(""+ItemID.PurpleIceBlock);
+			order.Add(""+ItemID.RedIceBlock);
+			order.Add(""+ItemID.PinkIceBlock);
+			order.Add(""+ItemID.Granite);
+			order.Add(""+ItemID.GraniteBlock);
+			order.Add(""+ItemID.Marble);
+			order.Add(""+ItemID.MarbleBlock);
+			order.Add(""+ItemID.AshBlock);
 			
 			/*thorium support*/
-			contents.Add("ThoriumMod:MarineRock");
-			contents.Add("ThoriumMod:MarineRockMoss");
-			contents.Add("ThoriumMod:BrackMud");
-			
+			order.Add("ThoriumMod:MarineRock");
+			order.Add("ThoriumMod:MarineRockMoss");
+			order.Add("ThoriumMod:BrackMud");
+
 			/*crystilium mod support*/
-			contents.Add("CrystiliumMod:CrystalBlock");
-			
-			/*spirit mod support*/
-			contents.Add("SpiritMod:SpiritDirtItem");
-			contents.Add("SpiritMod:SpiritStoneItem");
-			contents.Add("SpiritMod:SpiritSandItem");
-			contents.Add("SpiritMod:SpiritIceItem");
-			
-		}
+			order.Add("CrystiliumMod:CrystalBlock");
+
+            /*spirit mod support*/
+            order.Add("SpiritMod:ReachGrass");
+            order.Add("SpiritMod:HalloweenGrass");
+            order.Add("SpiritMod:SpiritDirtItem");
+			order.Add("SpiritMod:SpiritStoneItem");
+			order.Add("SpiritMod:SpiritSandItem");
+			order.Add("SpiritMod:SpiritIceItem");
+
+            /*GRealm support*/
+            order.Add("GRealm:EverfrostBlock");
+            order.Add("GRealm:EversnowBlock");
+
+            order.Add("Tremor:IceBlockB");
+
+            order.Add("CosmeticVariety:Starstone");
+            order.Add("CosmeticVariety:Starsoil");
+            order.Add("CosmeticVariety:Starsand");
+
+            order.Add("EA:Item_3101");
+            order.Add("EA:Item_3131");
+            order.Add("EA:Item_3163");
+            order.Add("EA:Item_3367");
+            order.Add("EA:Item_3390");
+            order.Add("EA:Item_3606");
+            order.Add("EA:Item_3607");
+            order.Add("EA:Item_3608");
+            order.Add("EA:Item_3609");
+
+            order.Add("Erilipah:ShadaineStone");
+
+            order.Add("Exodus:LimestoneItem");
+
+            order.Add("EXOsphere:ultrastone");
+
+            order.Add("SacredTools:FlameRack");
+            order.Add("SacredTools:FlamingRack");
+            order.Add("SacredTools:FrostRack");
+            order.Add("SacredTools:ScorchedSand");
+
+            order.Add("TerrarianExlorationPlus:RadiatedEarth");
+            order.Add("TerrarianExlorationPlus:Andesite");
+            order.Add("TerrarianExlorationPlus:Basalt");
+            order.Add("TerrarianExlorationPlus:Dacite");
+            order.Add("TerrarianExlorationPlus:Diorite");
+            order.Add("TerrarianExlorationPlus:MossyStone");
+
+            order.Add("titedogOre:TutorialBiomeBlock");
+
+        }
 
         public override void SetStaticDefaults()
         {
@@ -85,20 +131,72 @@ namespace JPANsBagsOfHoldingMod.Items
 			base.SetDefaults();
 			item.value = Item.sellPrice(0,0,15,0);
 		}
-		
-		public override void setupItemList(){
-			order = contents;
-			base.setupItemList();
-			
-		}
-		
-		public override void AddRecipes(){
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Silk, 15);
-			recipe.AddIngredient(ItemID.FallenStar, 1);
-			recipe.SetResult(this, 1);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.AddRecipe();
+
+        private Preferences bagConfig;
+
+        public override void setupItemList()
+        {
+            bagID = 1;
+            if (bagConfig == null)
+            {
+                remakeFromConfig();
+            }
+            else
+            {
+                if (items == null)
+                    items = new TagCompound();
+                config = bagConfig;
+                order = contents;
+                preventPickup = noPickup;
+                loadLeftClickFromConfig();
+            }
+        }
+
+        public override void remakeFromConfig()
+        {
+            base.setupItemList();
+            if (contents == null)
+            {
+                contents = new List<string>();
+            }
+            else
+            {
+                contents.Clear();
+            }
+            contents.AddRange(order);
+            if (noPickup == null)
+            {
+                noPickup = new List<string>();
+            }
+            else
+            {
+                noPickup.Clear();
+            }
+            noPickup.AddRange(preventPickup);
+            if (bagConfig == null)
+            {
+                bagConfig = config;
+            }
+            else
+            {
+                foreach (string k in config.GetAllKeys())
+                {
+                    bagConfig.Put(k, config.Get<object>(k, null));
+                }
+                bagConfig.Save();
+            }
+        }
+
+        public override void AddRecipes(){
+            if (!disableBag)
+            {
+                ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(ItemID.Silk, 15);
+                recipe.AddIngredient(ItemID.FallenStar, 1);
+                recipe.SetResult(this, 1);
+                recipe.AddTile(TileID.WorkBenches);
+                recipe.AddRecipe();
+            }
 		}
 	}
 }

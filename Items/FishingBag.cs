@@ -22,11 +22,16 @@ namespace JPANsBagsOfHoldingMod.Items
 			resetContents();
 		}
 		public static void resetContents(){
-			contents.Clear();
-			contents.AddRange(originalContents);
-			contents.AddRange(CrateBag.contents);
-			contents.AddRange(FishBag.contents);
-			contents.AddRange(BaitBag.contents);
+            contents.Clear();
+            GenericHoldingBag bg = new CrateBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
+            bg = new FishBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
+            bg = new BaitBag();
+            bg.setupItemList();
+            contents.AddRange(bg.order);
 		}
 
         public override void SetStaticDefaults()
@@ -48,20 +53,24 @@ namespace JPANsBagsOfHoldingMod.Items
 		}
 		
 		public override void setupItemList(){
-			order = contents;
+            bagID = 8;
+            order = contents;
 			base.setupItemList();
-		}
+            order = contents;
+        }
 		
 		public override void AddRecipes(){
-			//this.SetDefaults();
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "FishBag",1);
-			recipe.AddIngredient(null, "BaitBag",1);
-			recipe.AddIngredient(null, "CrateBag",1);
-			recipe.AddIngredient(ItemID.FallenStar, 1);
-			recipe.SetResult(this, 1);
-			recipe.AddTile(TileID.TinkerersWorkbench);
-			recipe.AddRecipe();
+            if (!disableBag)
+            {
+                ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(null, "FishBag", 1);
+                recipe.AddIngredient(null, "BaitBag", 1);
+                recipe.AddIngredient(null, "CrateBag", 1);
+                recipe.AddIngredient(ItemID.FallenStar, 1);
+                recipe.SetResult(this, 1);
+                recipe.AddTile(TileID.TinkerersWorkbench);
+                recipe.AddRecipe();
+            }
 		}
 	}
 }

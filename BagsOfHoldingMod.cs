@@ -15,11 +15,27 @@ using JPANsBagsOfHoldingMod.Items;
 using JPANsBagsOfHoldingMod.UI;
 using Terraria.Localization;
 using System.Reflection;
+using Terraria.IO;
+using Terraria.ModLoader.IO;
 
 namespace JPANsBagsOfHoldingMod
 {
     public class BagsOfHoldingMod : Mod
     {
+        public static bool checkAccessories = true;
+        public static bool checkVanity = false;
+        public static bool checkHotbar = false;
+        public static bool checkInventory = false;
+        public static bool tooltipDisplay = false;
+
+        public static bool tryPlace = true;
+        public static bool playSoundOnPickup = false;
+
+        public static string ConfigPath = Path.Combine(Main.SavePath, "Mod Configs", "JPANsBagsOfHolding");
+        public static string BagsConfigPath = Path.Combine(Main.SavePath, "Mod Configs", "JPANsBagsOfHolding", "Bags");
+
+        static Preferences config = new Preferences(Path.Combine(ConfigPath, "main.json"));
+
         public BagsOfHoldingMod()
         {
             Properties = new ModProperties()
@@ -30,8 +46,11 @@ namespace JPANsBagsOfHoldingMod
 
         private static UserInterface bagUI;
         public static GenericBagUI bagUIState;
+
         public override void Load()
         {
+            loadConfig();
+
             base.Load();
             if (!Main.dedServ)
             {
@@ -45,6 +64,188 @@ namespace JPANsBagsOfHoldingMod
         public override void Unload()
         {
             base.Unload();
+        }
+
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
+            int type = reader.ReadByte();
+
+            if(type == 1)
+            {
+                int playerID = reader.ReadByte();
+                int slot = reader.ReadByte();
+                int chest = reader.ReadInt32();
+                int x = reader.ReadInt32();
+                int y = reader.ReadInt32();
+                TagCompound bagContents = TagIO.Read(reader);
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    GenericHoldingBag bag = Main.player[playerID].inventory[slot].modItem as GenericHoldingBag;
+                    if(bag == null)
+                        bag = new TrueOmniBag();
+
+                    bag.items = bagContents;
+                    if(chest > -1)
+                    {
+                        int trueChest = GenericHoldingBag.getChestAtTarget(x, y);
+                        if (Main.chest[trueChest] != null && !GenericHoldingBag.IsPlayerInChest(trueChest) && !Chest.isLocked(Main.chest[trueChest].x, Main.chest[trueChest].y))
+                        {
+                            bag.emptyBagOnInventory(Main.player[playerID], Main.chest[trueChest].item, trueChest);
+                        }
+                    }else {
+                        bag.emptyBagOnMagicStorage(Main.player[playerID], x, y);
+                    }
+
+                    bagContents = bag.items;
+                }
+                ModPacket p = GetPacket();
+                p.Write((byte)2);
+                p.Write((byte)playerID);
+                p.Write((byte)slot);
+                TagIO.Write(bagContents,p);
+                p.Send(playerID);
+                return;
+            }
+
+            if(type == 2)
+            {
+                int playerID = reader.ReadByte();
+                int slot = reader.ReadByte();
+                TagCompound bagContents = TagIO.Read(reader);
+                GenericHoldingBag bag = Main.player[playerID].inventory[slot].modItem as GenericHoldingBag;
+                if(bag != null)
+                {
+                    bag.items.Clear();
+                    foreach (KeyValuePair<string, object> k in bagContents)
+                    {
+                         bag.items.Add(k);
+                    }
+                }
+            }
+
+            if(type == 3)
+            {
+                if(Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    int flags = reader.ReadByte();
+                    BagPlayer pl = Main.player[Main.myPlayer].GetModPlayer<BagPlayer>();
+                    pl.checkAccessories = (flags & 1) == 1;
+                    pl.checkVanity = (flags & 2) == 2;
+                    pl.checkHotbar = (flags & 4) == 4;
+                    pl.checkInventory = (flags & 8) == 1;
+                    pl.tryPlace = (flags & 16) == 1;
+                }
+            }
+            /*
+            if(type == 4) // check Order lists with server
+            {
+                if (Main.netMode == NetmodeID.Server) {
+                    int player = reader.ReadByte();
+
+                    ulong dirtBagHash = reader.ReadUInt64();
+                    ulong oreBagHash = reader.ReadUInt64();
+                    ulong gemBagHash = reader.ReadUInt64();
+
+                    GenericHoldingBag bg = new DirtBag();
+                    bool anyBag = false;
+                    if (dirtBagHash != bg.getOrderHashCode())
+                    {
+                        sendBagOrder(player, bg);
+                        anyBag = true;
+                    }
+                    bg = new OreBag();
+                    if(oreBagHash != bg.getOrderHashCode())
+                    {
+                        sendBagOrder(player, bg);
+                        anyBag = true;
+                    }
+                    bg = new GemBag();
+                    if (gemBagHash != bg.getOrderHashCode())
+                    {
+                        sendBagOrder(player, bg);
+                        anyBag = true;
+                    }
+
+                    if (anyBag)
+                    {
+                        ModPacket pk = GetPacket();
+                        pk.Write((byte)5);
+                        pk.Write((byte)new OmniBag().bagID);
+                        pk.Send(player);
+                    }
+
+                }
+                
+
+
+            }
+
+            if(type == 5) // Clear order and not pickup list for this bag
+            {
+                if(Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    GenericHoldingBag bg = getBagFromID(reader.ReadByte());
+                    bg.order.Clear();
+                    bg.preventPickup.Clear();
+                }
+            }
+            if(type == 6) // add String to order list;
+            {
+
+            }
+            if(type == 7) // add String to not pickup
+            {
+
+            }
+            */
+        }
+
+        public void sendBagOrder(int player, GenericHoldingBag bg)
+        {
+            ModPacket pk = GetPacket();
+            pk.Write((byte)5);
+            pk.Write((byte)bg.bagID);
+            pk.Send(player);
+            for (int i = 0; i < bg.order.Count; i++)
+            {
+                pk = GetPacket();
+                pk.Write((byte)6);
+                pk.Write((byte)bg.bagID);
+                pk.Write(bg.order[i]);
+                pk.Send(player);
+            }
+            for(int i = 0; i < bg.preventPickup.Count; i++)
+            {
+                pk = GetPacket();
+                pk.Write((byte)7);
+                pk.Write((byte)bg.bagID);
+                pk.Write(bg.preventPickup[i]);
+                pk.Send(player);
+            }
+        }
+
+        public GenericHoldingBag getBagFromID(int id)
+        {
+            switch (id)
+            {
+                case 1: return new DirtBag();
+                case 2: return new OreBag();
+                case 3: return new GemBag();
+                case 4: return new OmniBag();
+                case 5: return new BaitBag();
+                case 6: return new CrateBag();
+                case 7: return new FishBag();
+                case 8: return new FishingBag();
+                case 9: return new PlantBag();
+                case 10: return new WoodBag();
+                case 11: return new MushroomBag();
+                case 12: return new DyeMaterialBag();
+                case 13: return new NatureBag();
+                case 14: return new CoinBag();
+                case 15: return new TrueOmniBag();
+                case 16: return new ChunkBag();
+            }
+            return null;
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -70,9 +271,36 @@ namespace JPANsBagsOfHoldingMod
             }
         }
 
+        public void loadConfig()
+        {
+            if (!System.IO.Directory.Exists(ConfigPath))
+            {
+                System.IO.Directory.CreateDirectory(ConfigPath);
+            }
+            if (!config.Load())
+            {
+                config.Put("checkNormalAccessoriesForBags", true);
+                config.Put("checkSocialAccessoriesForBags", false);
+                config.Put("checkHotbarForBags", false);
+                config.Put("checkInventoryForBags", false);
+                config.Put("tryPlaceItemInInventory", true);
+                config.Put("playSoundOnPickup", false);
+                config.Put("displayTagOnTooltip", false);
+                config.Save(true);
+            }
+            checkAccessories = config.Get<bool>("checkNormalAccessoriesForBags", true);
+            checkVanity = config.Get<bool>("checkSocialAccessoriesForBags", false);
+            checkHotbar = config.Get<bool>("checkHotbarForBags", false);
+            checkInventory = config.Get<bool>("checkInventoryForBags", false);
+            tryPlace = config.Get<bool>("tryPlaceItemInInventory", true);
+            playSoundOnPickup = config.Get<bool>("playSoundOnPickup", false);
+            tooltipDisplay = config.Get<bool>("displayTagOnTooltip", false);
+
+        }
+
         public override object Call(params object[] args) {
 
-            if (args == null || args.Length < 3) {
+            /*if (args == null || args.Length < 3) {
                 return false;
             }
 
@@ -222,7 +450,8 @@ namespace JPANsBagsOfHoldingMod
                         contents.Remove(items[i]);
                 }
             }
-            return true;
+            return true;*/
+            return false;
         }
 
         public void addItemToContents(List<string> contents, int index, List<string> items)
@@ -304,6 +533,20 @@ namespace JPANsBagsOfHoldingMod
 						Main.NewText(toSend[i], c.R, c.G, c.B);
 				}
 			}
-		}		
+		}	
+        
+        public static List<string> getStringListFromConfig(Preferences configuration, string tokenID)
+        {
+            List<string> ans = new List<string>();
+            Newtonsoft.Json.Linq.JArray o = configuration.Get<Newtonsoft.Json.Linq.JArray>(tokenID, null);
+            if (o != null)
+            {
+                foreach (Newtonsoft.Json.Linq.JToken j in o)
+                {
+                    ans.Add(j.ToString());
+                }
+            }
+            return ans;
+        }
 	}
 }
