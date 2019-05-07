@@ -54,9 +54,11 @@ namespace JPANsBagsOfHoldingMod.Items
 		
 		public override void setupItemList(){
             bagID = 8;
-            order = contents;
-			base.setupItemList();
-            order = contents;
+            if (order == null || order.Count == 0)
+            {
+                base.setupItemList();
+                order.AddRange(contents);
+            }
         }
 		
 		public override void AddRecipes(){

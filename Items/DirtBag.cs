@@ -20,8 +20,9 @@ namespace JPANsBagsOfHoldingMod.Items
         public static List<string> contents;
         public static List<string> noPickup;
 
-        public override void createDefaultItemList()
+        public override bool createDefaultItemList()
         {
+           
             preventPickup = new List<string>();
             order = new List<string>();
 			order.Add(""+ItemID.DirtBlock);
@@ -113,6 +114,7 @@ namespace JPANsBagsOfHoldingMod.Items
 
             order.Add("titedogOre:TutorialBiomeBlock");
 
+            return true;
         }
 
         public override void SetStaticDefaults()

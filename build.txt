@@ -1,5 +1,5 @@
 author = JPAN
-version = 1.4
+version = 1.4.1
 displayName = JPAN's Bags of Holding mod
 hideCode = false
 hideResources = false

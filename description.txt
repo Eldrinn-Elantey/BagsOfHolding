@@ -13,6 +13,10 @@ All bags are crafted with 15 silk and one fallen star at a workbench, all collec
 
 Also included is the "generic bag" that can be extended by other mods using this one as base to create unique bags.
 
+v1.4.1
+- Collective bags now use Order as well, if you want
+- Fixed issues 1 and 2 in the tracker (will remain open until feedback can be received)
+
 v1.4 Changelog
 - All bags now have a config file that determines what they can pickup and store, as well as the item order they appear in the bag and individiual toggles for each left-click action (allows ie: disabling the left click to floor action).
   - Collective bags don't use the "order" list, instead recreating it from their base bags order lists.

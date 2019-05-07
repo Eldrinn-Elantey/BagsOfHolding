@@ -22,7 +22,6 @@ namespace JPANsBagsOfHoldingMod.Items
 			resetContents();
 		}
 		public static void resetContents(){
-
             contents.Clear();
             GenericHoldingBag bg = new OreBag();
             bg.setupItemList();
@@ -54,9 +53,11 @@ namespace JPANsBagsOfHoldingMod.Items
 		
 		public override void setupItemList(){
             bagID = 4;
-			order = contents;
-			base.setupItemList();
-            order = contents;
+            if (order == null || order.Count == 0)
+            {
+                base.setupItemList();
+                order.AddRange(contents);
+            }
         }
 		
 		public override void AddRecipes(){

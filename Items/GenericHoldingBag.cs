@@ -708,12 +708,14 @@ namespace JPANsBagsOfHoldingMod.Items
            loadConfig();
            loadLeftClickFromConfig();
            order = BagsOfHoldingMod.getStringListFromConfig(config, "order");
-           if(order.Count == 0)
+           if(order.Count == 0 && createDefaultItemList())
            {
-                createDefaultItemList();
                 config.Put("order", order.ToArray());
-                config.Save();
-            }
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    config.Save();
+                }
+           }
            preventPickup = BagsOfHoldingMod.getStringListFromConfig(config, "noPickup");
         }
         
@@ -725,9 +727,9 @@ namespace JPANsBagsOfHoldingMod.Items
             leftClickOnPiggyBank = config.Get<bool>("leftClickOnPiggyBank", leftClickOnPiggyBank);
         }
 
-        public virtual void createDefaultItemList()
+        public virtual bool createDefaultItemList()
         {
-
+            return false;
         }	
 
         public ulong getOrderHashCode()

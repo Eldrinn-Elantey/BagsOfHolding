@@ -22,7 +22,7 @@ namespace JPANsBagsOfHoldingMod.Items
         public static List<string> contents;
         public static List<string> noPickup;
 
-        public override void createDefaultItemList()
+        public override bool createDefaultItemList()
         {
             preventPickup = new List<string>();
             order = new List<string>();
@@ -31,6 +31,8 @@ namespace JPANsBagsOfHoldingMod.Items
             order.Add("ThoriumMod:LodeStoneChunk");
             order.Add("ThoriumMod:ValadiumChunk");
             order.Add("ThoriumMod:IllumiteChunk");
+
+            return true;
         }
 
 

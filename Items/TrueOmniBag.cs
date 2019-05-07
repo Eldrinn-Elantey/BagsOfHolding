@@ -87,10 +87,11 @@ namespace JPANsBagsOfHoldingMod.Items
             }
         }
 
-        public override void createDefaultItemList()
+        public override bool createDefaultItemList()
         {
             blacklist = new List<string>();
             preventPickup = new List<string>();
+            return false;
         }
 
         public override void AddRecipes(){
