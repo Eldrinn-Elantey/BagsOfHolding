@@ -13,6 +13,9 @@ All bags are crafted with 15 silk and one fallen star at a workbench, all collec
 
 Also included is the "generic bag" that can be extended by other mods using this one as base to create unique bags.
 
+v1.4.2.1
+ - Updated to tmod 0.11.6.1
+
 v1.4.1
 - Collective bags now use Order as well, if you want
 - Fixed issues 1 and 2 in the tracker (will remain open until feedback can be received)
